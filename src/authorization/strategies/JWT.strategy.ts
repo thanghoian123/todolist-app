@@ -1,16 +1,17 @@
-import {
-  AuthenticationBindings,
-  AuthenticationMetadata,
-  AuthenticationStrategy,
-  TokenService,
-} from '@loopback/authentication';
+import {Request, HttpErrors} from '@loopback/rest';
 import {inject} from '@loopback/core';
-import {HttpErrors, Request} from '@loopback/rest';
-import {MyAuthBindings} from '../keys';
-import {MyUserProfile, UserPermissionsFn} from '../types';
+import {AuthenticationStrategy,
+        AuthenticationMetadata,
+        AuthenticationBindings,
+        TokenService,
+} from '@loopback/authentication';
+import {MyUserProfile,
+        UserPermissionsFn,
+        RequiredPermissions,} from '../types';
+import {MyAuthBindings,} from '../keys';
 
-export class JWTStrategy implements AuthenticationStrategy {
-  name = 'jwt';
+export class JWTStrategy implements AuthenticationStrategy{
+  name: string = 'jwt';
 
   constructor(
     @inject(AuthenticationBindings.METADATA)
@@ -22,13 +23,12 @@ export class JWTStrategy implements AuthenticationStrategy {
   ) {}
   async authenticate(request: Request): Promise<MyUserProfile | undefined> {
     const token: string = this.extractCredentials(request);
-    try {
-      const user: MyUserProfile = (await this.tokenService.verifyToken(
-        token,
-      )) as unknown as MyUserProfile;
+    try{
+      const user: MyUserProfile = await this.tokenService.verifyToken(token) as MyUserProfile;
+      console.log("🚀 ~ file: JWT.strategy.ts ~ line 28 ~ JWTStrategy ~ authenticate ~ user", user)
       return user;
-    } catch (err) {
-      Object.assign(err, {code: 'INVALID_ACCESS_TOKEN', statusCode: 401});
+    } catch (err: any) {
+      Object.assign(err, {code: 'INVALID_ACCESS_TOKEN', statusCode: 401,});
       throw err;
     }
   }
@@ -49,7 +49,7 @@ export class JWTStrategy implements AuthenticationStrategy {
       throw new HttpErrors.Unauthorized(
         `Authorization header value has too many parts. It must follow the pattern: 'Bearer xx.yy.zz' where xx.yy.zz is a valid JWT token.`,
       );
-    const token = parts[1];
-    return token;
+      const token = parts[1];
+      return token;
   }
 }
