@@ -1,0 +1,20 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: firstgame
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: firstgame
+    spec:
+      containers:
+        - name: fg1
+          image: us.icr.io/my-lb4-namespace/firstgame-repo:1.0
+          ports:
+            - containerPort: 3000
+        - name: db1
+          image: mongo
+          ports:
+            - containerPort: 27017
