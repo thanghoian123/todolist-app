@@ -14,15 +14,28 @@ import { HttpErrors } from '@loopback/rest';
 import {
   Credential, CredentialsRequestBody, JWTService, MyAuthBindings, MyUserProfile, PermissionKey, UserProfileSchema, UserRequestBody
 } from '../authorization';
-  
+import {
+  TokenServiceBindings,
+  MyUserService,
+  UserServiceBindings,
+} from '@loopback/authentication-jwt';
+import {SecurityBindings, UserProfile} from '@loopback/security';
+
   export class UserController {
     constructor(
       @repository(UserRepository)
       public userRepository: UserRepository,
-      @inject(MyAuthBindings.TOKEN_SERVICE)
+      @inject(TokenServiceBindings.TOKEN_SERVICE)
       public jwtService: JWTService,
+      // @inject(MyAuthBindings.TOKEN_SERVICE)
+      // public jwtService: JWTService,
       @inject.getter(AuthenticationBindings.CURRENT_USER)
       public getCurrentUser: Getter<MyUserProfile>,
+
+      @inject(UserServiceBindings.USER_SERVICE)
+      public userService: MyUserService,
+      @inject(SecurityBindings.USER, {optional: true})
+      public user: MyUserProfile,
     ) {}
   
     
@@ -90,7 +103,7 @@ import {
         },
       },
     })
-    @authenticate('custom', {required: [PermissionKey.BASE_USER]} as any)
+    @authenticate('jwt', {required: [PermissionKey.BASE_USER]} as any)
     async printCurrentUser(): Promise<MyUserProfile> {
       return this.getCurrentUser();
     }

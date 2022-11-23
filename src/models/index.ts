@@ -9,3 +9,4 @@ export * from './weapon.model';
 
 export * from './project.model';
 export * from './task.model';
+export * from './task-task.model';

@@ -1,5 +1,7 @@
-import {Entity, model, property} from '@loopback/repository';
+import {belongsTo, Entity, model, property, hasMany} from '@loopback/repository';
 import uuid = require('uuid');
+import { Project, ProjectWithRelations } from './project.model';
+import {TaskTask} from './task-task.model';
 
 @model()
 export class Task extends Entity {
@@ -15,10 +17,17 @@ export class Task extends Entity {
   })
   name: string;
 
-  @property({
-    type: 'string',
-  })
+  @belongsTo(() => Project)
   projectId?: string;
+
+  @hasMany(() => Task, {
+    through: {
+      model: () => TaskTask,
+      keyFrom: 'taskId',
+      keyTo: 'fk_taskId',
+    },
+  })
+  tasks: Task[];
 
   constructor(data?: Partial<Task>) {
     super(data);
@@ -26,6 +35,7 @@ export class Task extends Entity {
 }
 
 export interface TaskRelations {
+  project?: ProjectWithRelations;
   // describe navigational properties here
 }
 

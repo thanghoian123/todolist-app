@@ -39,8 +39,8 @@ export class FirstgameApplication extends BootMixin(
      // Bind datasource
     this.dataSource(MysqlDataSource, UserServiceBindings.DATASOURCE_NAME);
     // Bind JWT & permission authentication strategy related elements
-    registerAuthenticationStrategy(this, JWTStrategy as any);
-    registerAuthenticationStrategy(this, CustomStrategy as any);
+    registerAuthenticationStrategy(this as any, JWTStrategy as any);
+    registerAuthenticationStrategy(this as any, CustomStrategy as any);
     this.bind(MyAuthBindings.TOKEN_SERVICE).toClass(JWTService);
     this.bind(MyAuthBindings.USER_PERMISSIONS).toProvider(
       UserPermissionsProvider

@@ -35,10 +35,10 @@ export class MySequence implements SequenceHandler {
     try {
       const {request, response} = context;
       const route = this.findRoute(request);
+      await this.authenticateRequest(request);
       const args = await this.parseParams(request, route);
       console.log("-=-------,")
       //add authentication actions
-      const a =await this.authenticateRequest(request);
       console.log("-=-------2222")
 
       const result = await this.invoke(route, args);
