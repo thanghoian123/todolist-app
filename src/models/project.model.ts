@@ -1,14 +1,14 @@
-import { Entity, hasMany, model, property } from '@loopback/repository';
-import { v4 as uuid } from 'uuid';
-import { ProjectUser } from './project-user.model';
-import { User } from './user.model';
+import {Entity, model, property, hasMany} from '@loopback/repository';
+import {User} from './user.model';
+import {ProjectUser} from './project-user.model';
+import uuid = require('uuid');
 
 @model()
 export class Project extends Entity {
   @property({
     type: 'string',
     id: true,
-    default: () => uuid(),
+    default: ()=>uuid()
   })
   id?: string;
 
@@ -18,10 +18,16 @@ export class Project extends Entity {
   })
   name: string;
 
-  @hasMany(() => User, {through: {model: () => ProjectUser}} as any)
+  @hasMany(() => User, {through: {model: () => ProjectUser}})
   users: User[];
 
   constructor(data?: Partial<Project>) {
     super(data);
   }
 }
+
+export interface ProjectRelations {
+  // describe navigational properties here
+}
+
+export type ProjectWithRelations = Project & ProjectRelations;

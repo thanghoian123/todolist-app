@@ -67,7 +67,7 @@ export class UpdateCharacterController {
   })
   @authenticate('jwt', {
     required: [PermissionKey.ViewOwnUser, PermissionKey.UpdateOwnUser],
-  })
+  }as any)
   async findById(): Promise<any[]> {
     const currentUser = await this.getCurrentUser();
     let res: any[] = ['no weapon', 'no armor', 'no skill'];
@@ -100,7 +100,7 @@ export class UpdateCharacterController {
   })
   @authenticate('jwt', {
     required: [PermissionKey.ViewOwnUser, PermissionKey.UpdateOwnUser],
-  })
+  }as any)
   async levelUp(): Promise<Character> {
     const currentUser = await this.getCurrentUser();
     let char: Character = await this.characterRepository.findById(
@@ -133,7 +133,7 @@ export class UpdateCharacterController {
   })
   @authenticate('jwt', {
     required: [PermissionKey.ViewOwnUser, PermissionKey.UpdateOwnUser],
-  })
+  }as any)
   async initCharacter(@requestBody() newChar: NewChar): Promise<NewChar> {
     const currentUser = await this.getCurrentUser();
     //equip new weapon
@@ -174,7 +174,7 @@ export class UpdateCharacterController {
   })
   @authenticate('jwt', {
     required: [PermissionKey.ViewOwnUser, PermissionKey.UpdateOwnUser],
-  })
+  }as any)
   async updateWeapon(@requestBody() weapon: Weapon): Promise<Weapon> {
     const currentUser = await this.getCurrentUser();
     //equip new weapon
@@ -214,7 +214,7 @@ export class UpdateCharacterController {
   })
   @authenticate('jwt', {
     required: [PermissionKey.ViewOwnUser, PermissionKey.UpdateOwnUser],
-  })
+  }as any)
   async updateArmor(@requestBody() armor: Armor): Promise<Armor> {
     const currentUser = await this.getCurrentUser();
     //equip new armor
@@ -254,7 +254,7 @@ export class UpdateCharacterController {
   })
   @authenticate('jwt', {
     required: [PermissionKey.ViewOwnUser, PermissionKey.UpdateOwnUser],
-  })
+  }as any)
   async updateSkill(@requestBody() skill: Skill): Promise<Skill> {
     const currentUser = await this.getCurrentUser();
     await this.characterRepository.skill(currentUser.email).delete();
@@ -275,7 +275,7 @@ export class UpdateCharacterController {
   })
   @authenticate('jwt', {
     required: [PermissionKey.ViewOwnUser, PermissionKey.UpdateOwnUser],
-  })
+  }as any)
   async deleteWeapon(): Promise<void> {
     const currentUser = await this.getCurrentUser();
     //unequip old weapon
@@ -306,7 +306,7 @@ export class UpdateCharacterController {
   })
   @authenticate('jwt', {
     required: [PermissionKey.ViewOwnUser, PermissionKey.UpdateOwnUser],
-  })
+  } as any)
   async deleteArmor(): Promise<void> {
     const currentUser = await this.getCurrentUser();
     //unequip old armor
@@ -337,7 +337,7 @@ export class UpdateCharacterController {
   })
   @authenticate('jwt', {
     required: [PermissionKey.ViewOwnUser, PermissionKey.UpdateOwnUser],
-  })
+  }as any)
   async deleteSkill(): Promise<void> {
     const currentUser = await this.getCurrentUser();
     await this.characterRepository.skill(currentUser.email).delete();

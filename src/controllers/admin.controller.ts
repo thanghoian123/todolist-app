@@ -56,7 +56,7 @@ export class AdminController {
         throw new HttpErrors.BadRequest(`This email already exists`);
       }
       else {
-        const savedCharacter = await this.characterRepository.create(character);
+        const savedCharacter = await this.characterRepository.create(character) as any;
         delete savedCharacter.password;
         return savedCharacter;
       }
@@ -74,7 +74,7 @@ export class AdminController {
       },
     },
   })
-  @authenticate('jwt', {"required": [PermissionKey.ViewAnyUser]})
+  @authenticate('jwt', {"required": [PermissionKey.ViewAnyUser]} as any)
   async count(
     @param.query.object('where', getWhereSchemaFor(Character)) where?: Where<Character>,
   ): Promise<Count> {
@@ -97,7 +97,7 @@ export class AdminController {
       },
     },
   })
-  @authenticate('jwt', {"required": [PermissionKey.ViewAnyUser]})
+  @authenticate('jwt', {"required": [PermissionKey.ViewAnyUser]}as any)
   async find(
     @param.query.object('filter', getFilterSchemaFor(Character)) filter?: Filter<Character>,
   ): Promise<Character[]> {
@@ -116,7 +116,7 @@ export class AdminController {
       },
     },
   })
-  @authenticate('jwt', {"required": [PermissionKey.ViewAnyUser, PermissionKey.UpdateAnyUser]})
+  @authenticate('jwt', {"required": [PermissionKey.ViewAnyUser, PermissionKey.UpdateAnyUser]}as any)
   async updateAll(
     @requestBody() character: Character,
     @param.query.object('where', getWhereSchemaFor(Character)) where?: Where<Character>,
@@ -136,7 +136,7 @@ export class AdminController {
       },
     },
   })
-  @authenticate('jwt', {"required":[PermissionKey.ViewAnyUser]})
+  @authenticate('jwt', {"required":[PermissionKey.ViewAnyUser]} as any)
   async findById(
     @param.path.string('email') email: string
   ): Promise<Character> {
@@ -154,7 +154,7 @@ export class AdminController {
       },
     },
   })
-  @authenticate('jwt', {"required": [PermissionKey.ViewAnyUser, PermissionKey.UpdateAnyUser]})
+  @authenticate('jwt', {"required": [PermissionKey.ViewAnyUser, PermissionKey.UpdateAnyUser]} as any)
   async updateById(
     @param.query.string('email') email: string,
     @requestBody() character: Character,
@@ -172,7 +172,7 @@ export class AdminController {
       },
     },
   })
-  @authenticate('jwt', {"required": [PermissionKey.ViewAnyUser, PermissionKey.DeleteAnyUser]})
+  @authenticate('jwt', {"required": [PermissionKey.ViewAnyUser, PermissionKey.DeleteAnyUser]}as any)
   async deleteById(
     @param.path.string('email') email: string
   ): Promise<void> {

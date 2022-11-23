@@ -56,7 +56,7 @@ export class CharacterController {
     },
   })
   async create(
-    @requestBody(UserRequestBody) character: Character,
+    @requestBody(UserRequestBody as any) character: Character,
   ): Promise<Character> {
     character.permissions = [
       PermissionKey.ViewOwnUser,
@@ -67,7 +67,7 @@ export class CharacterController {
     if (await this.characterRepository.exists(character.email)) {
       throw new HttpErrors.BadRequest(`This email already exists`);
     } else {
-      const savedCharacter = await this.characterRepository.create(character);
+      const savedCharacter = await this.characterRepository.create(character) as any;
       delete savedCharacter.password;
       return savedCharacter;
     }
@@ -87,7 +87,7 @@ export class CharacterController {
     },
   })
   async login(
-    @requestBody(CredentialsRequestBody) credential: Credential,
+    @requestBody(CredentialsRequestBody as any) credential: Credential,
   ): Promise<{token: string}> {
     const token = await this.jwtService.getToken(credential);
     return {token};
@@ -105,7 +105,7 @@ export class CharacterController {
       },
     },
   })
-  @authenticate('jwt', {required: [PermissionKey.ViewOwnUser]})
+  @authenticate('jwt', {required: [PermissionKey.ViewOwnUser]} as any)
   async printCurrentUser(): Promise<MyUserProfile> {
     return this.getCurrentUser();
   }
@@ -121,7 +121,7 @@ export class CharacterController {
       },
     },
   })
-  @authenticate('jwt', {required: [PermissionKey.ViewOwnUser]})
+  @authenticate('jwt', {required: [PermissionKey.ViewOwnUser]} as any)
   async changeName(@requestBody() newName: Partial<Character>): Promise<void> {
     const currentUser = await this.getCurrentUser();
     let char: Character = await this.characterRepository.findById(
@@ -142,7 +142,7 @@ export class CharacterController {
       },
     },
   })
-  @authenticate('jwt', {required: [PermissionKey.ViewOwnUser]})
+  @authenticate('jwt', {required: [PermissionKey.ViewOwnUser]} as any)
   async findById(): Promise<Character> {
     const currentUser = await this.getCurrentUser();
     return await this.characterRepository.findById(currentUser.email);
@@ -158,7 +158,7 @@ export class CharacterController {
       },
     },
   })
-  @authenticate('jwt', {required: [PermissionKey.DeleteOwnUser]})
+  @authenticate('jwt', {required: [PermissionKey.DeleteOwnUser]} as any)
   async deleteById(): Promise<void> {
     const currentUser = await this.getCurrentUser();
     //delete weapon, armor, and skill

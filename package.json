@@ -70,6 +70,7 @@
   "devDependencies": {
     "@loopback/build": "^9.0.4",
     "@loopback/repository": "^5.0.4",
+    "@loopback/security": "^0.8.4",
     "@loopback/testlab": "^5.0.4",
     "@loopback/tslint-config": "^2.1.0",
     "@types/node": "^14.18.32",

@@ -7,7 +7,7 @@ import {
   
   export class UserRepository extends DefaultCrudRepository<
     User,
-    typeof User.prototype.email
+    typeof User.prototype.id
   > {
     constructor(
       @inject('datasources.mongo') dataSource: MysqlDataSource,

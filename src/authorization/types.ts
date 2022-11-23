@@ -1,5 +1,5 @@
 import {PermissionKey} from './permission-key';
-
+import {UserProfile} from "@loopback/security"
 export interface UserPermissionsFn {
   (
     userPermissions: PermissionKey[],
@@ -7,7 +7,7 @@ export interface UserPermissionsFn {
   ): boolean;
 }
 
-export interface MyUserProfile {
+export interface MyUserProfile extends Partial<UserProfile> {
   id: string;
   email: string;
   name: string;
@@ -34,11 +34,38 @@ export const UserProfileSchema = {
   },
 };
 
+export interface EProjectUserAdd  {
+  id: string;
+  userId: string;
+};
+
+export const ProjectUserAddSchema = {
+  type: 'object',
+  required: ['id', 'userId'],
+  properties: {
+    id: {
+      type: 'string',
+    },
+    userId: {
+      type: 'string',
+    },
+  },
+};
+
+
 export const UserRequestBody = {
   description: 'The input of create user function',
   required: true,
   content: {
     'application/json': {schema: UserProfileSchema},
+  },
+};
+
+export const ProjectAddUserRequestBody = {
+  description: 'The input of add user into projectg function',
+  required: true,
+  content: {
+    'application/json': {schema: ProjectUserAddSchema},
   },
 };
 

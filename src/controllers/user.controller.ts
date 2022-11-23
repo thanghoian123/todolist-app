@@ -1,8 +1,9 @@
 import {
+  Filter,
   repository
 } from '@loopback/repository';
 import {
-  get, post, requestBody
+  get, param, post, requestBody
 } from '@loopback/rest';
 import { User } from '../models';
 import { UserRepository } from '../repositories';
@@ -24,10 +25,7 @@ import {
       public getCurrentUser: Getter<MyUserProfile>,
     ) {}
   
-    /**
-     * create character
-     * @param user character
-     */
+    
     @post('/users', {
       responses: {
         '200': {
@@ -37,7 +35,13 @@ import {
       },
     })
     async create(
-      @requestBody(UserRequestBody as any) user: User,
+      @requestBody({
+        content: {
+          'application/json': {
+            schema: {'x-ts-type': User}
+          },
+        },
+      }) user: User,
     ): Promise<User> {
       user.permissions = [
         PermissionKey.BASE_USER,
@@ -46,8 +50,10 @@ import {
       if (await this.userRepository.exists(user.email)) {
         throw new HttpErrors.BadRequest(`This email already exists`);
       } else {
-        const saveUser = await this.userRepository.create(user);
-        delete saveUser.password;
+        console.log("---vaoday")
+        const saveUser = await this.userRepository.create(user) as any;
+        console.log("🚀 ~ file: user.controller.ts ~ line 51 ~ UserController ~ saveUser", saveUser)
+        delete saveUser['password'];
         return saveUser;
       }
     }
@@ -84,7 +90,7 @@ import {
         },
       },
     })
-    @authenticate('custom', {required: [PermissionKey.ViewOwnUser]})
+    @authenticate('custom', {required: [PermissionKey.ViewOwnUser]} as any)
     async printCurrentUser(): Promise<MyUserProfile> {
       return this.getCurrentUser();
     }
@@ -96,16 +102,14 @@ import {
       responses: {
         '200': {
           description: 'Character model instance',
-          content: {'application/json': {schema: {'x-ts-type': User}}},
+          content: {'application/json': {schema: {type: 'array','x-ts-type': User}}},
         },
       },
     })
-    @authenticate('jwt', {required: [PermissionKey.ViewOwnUser]})
-    async findById(): Promise<User> {
-      const currentUser = await this.getCurrentUser();
-      return await this.userRepository.findById(currentUser.email);
+    async find(
+      @param.filter(User) filter?: Filter<User>,
+    ): Promise<User[]> {
+      return  this.userRepository.find(filter);
     }
-  
-   
   }
   

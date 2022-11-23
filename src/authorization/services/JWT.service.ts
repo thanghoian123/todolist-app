@@ -19,7 +19,7 @@ export class JWTService implements TokenService {
     public userRepository: UserRepository,
   ) {}
 
-  async verifyToken(token: string): Promise<MyUserProfile> {
+  async verifyToken(token: string): Promise<MyUserProfile| any> {
     if (!token) {
       throw new HttpErrors.Unauthorized(
         `Error verifying token : 'token' is null`,
@@ -32,7 +32,7 @@ export class JWTService implements TokenService {
     return userProfile;
   }
 
-  async generateToken(userProfile: MyUserProfile): Promise<string> {
+  async generateToken(userProfile: MyUserProfile| any): Promise<string| any> {
     const token = await signAsync(userProfile, TokenServiceConstants.TOKEN_SECRET_VALUE, {
       expiresIn: TokenServiceConstants.TOKEN_EXPIRES_IN_VALUE,
     });

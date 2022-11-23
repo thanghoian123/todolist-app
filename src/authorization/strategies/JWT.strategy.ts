@@ -21,13 +21,13 @@ export class JWTStrategy implements AuthenticationStrategy{
     @inject(MyAuthBindings.TOKEN_SERVICE)
     protected tokenService: TokenService,
   ) {}
-  async authenticate(request: Request): Promise<MyUserProfile | undefined> {
+  async authenticate(request: Request): Promise<MyUserProfile | any> {
     const token: string = this.extractCredentials(request);
     try{
       const user: MyUserProfile = await this.tokenService.verifyToken(token) as MyUserProfile;
       console.log("🚀 ~ file: JWT.strategy.ts ~ line 28 ~ JWTStrategy ~ authenticate ~ user", user)
       return user;
-    } catch (err) {
+    } catch (err: any) {
       Object.assign(err, {code: 'INVALID_ACCESS_TOKEN', statusCode: 401,});
       throw err;
     }
@@ -65,13 +65,13 @@ export class CustomStrategy implements AuthenticationStrategy{
     @inject(MyAuthBindings.TOKEN_SERVICE)
     protected tokenService: TokenService,
   ) {}
-  async authenticate(request: Request): Promise<MyUserProfile | undefined> {
+  async authenticate(request: Request): Promise<any> {
     const token: string = this.extractCredentials(request);
     try{
-      const user: MyUserProfile = await this.tokenService.verifyToken(token) as MyUserProfile;
+      const user: MyUserProfile = await this.tokenService.verifyToken(token) as unknown as MyUserProfile;
       console.log("🚀 ~ file: JWT.strategy.ts ~ line 28 ~ JWTStrategy ~ authenticate ~ user", user)
       return user;
-    } catch (err) {
+    } catch (err : any) {
       Object.assign(err, {code: 'INVALID_ACCESS_TOKEN', statusCode: 401,});
       throw err;
     }
