@@ -9,7 +9,7 @@ export class ProjectUserRepository extends DefaultCrudRepository<
   ProjectUserRelations
 > {
   constructor(
-    @inject('datasources.mongo') dataSource: MysqlDataSource,
+    @inject('datasources.postgresql') dataSource: MysqlDataSource,
   ) {
     super(ProjectUser, dataSource);
   }

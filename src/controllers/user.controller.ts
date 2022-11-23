@@ -90,7 +90,7 @@ import {
         },
       },
     })
-    @authenticate('custom', {required: [PermissionKey.ViewOwnUser]} as any)
+    @authenticate('custom', {required: [PermissionKey.BASE_USER]} as any)
     async printCurrentUser(): Promise<MyUserProfile> {
       return this.getCurrentUser();
     }

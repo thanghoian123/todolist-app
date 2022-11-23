@@ -13,10 +13,10 @@ const config= {
 }
 
 export class MysqlDataSource extends juggler.DataSource {
-  static dataSourceName = 'mongo';
+  static dataSourceName = 'postgresql';
 
   constructor(
-    @inject('datasources.config.mongo', {optional: true})
+    @inject('datasources.config.postgresql', {optional: true})
     dsConfig: object = config,
   ) {
     super(dsConfig);

@@ -17,7 +17,7 @@ import {
   requestBody,
   response,
 } from '@loopback/rest';
-import { EProjectUserAdd, ProjectAddUserRequestBody, ProjectUserAddSchema } from '../authorization';
+import { EProjectUserAdd, IProjectTaskAdd, ProjectAddTaskRequestBody, ProjectAddUserRequestBody, ProjectUserAddSchema } from '../authorization';
 import {Project} from '../models';
 import {ProjectRepository, ProjectUserRepository} from '../repositories';
 
@@ -65,6 +65,20 @@ export class ProjectController {
     return {message:"success"};
   }
 
+  @post('/projects/addTask',{
+    responses: {
+      '200': ProjectAddUserRequestBody
+    },
+  })
+  
+  async addTask(
+    @requestBody(ProjectAddTaskRequestBody as any)
+    params : IProjectTaskAdd,
+  ): Promise<any> {
+    return this.projectRepository.tasks(params.projectId).create({name: params.name})
+    
+  }
+
   @get('/projects/count')
   @response(200, {
     description: 'Project model count',
@@ -88,7 +102,7 @@ export class ProjectController {
   async find(
     @param.filter(Project) filter?: Filter<Project>,
   ): Promise<Project[]> {
-    return this.projectRepository.find({ include: ['users']});
+    return this.projectRepository.find({ include: ['users', 'tasks']});
   }
 
   @patch('/projects')

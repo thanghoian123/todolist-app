@@ -23,6 +23,7 @@ export class JWTStrategy implements AuthenticationStrategy{
   ) {}
   async authenticate(request: Request): Promise<MyUserProfile | any> {
     const token: string = this.extractCredentials(request);
+    console.log("🚀 ~ file: JWT.strategy.ts ~ line 26 ~ JWTStrategy ~ authenticate ~ token", token)
     try{
       const user: MyUserProfile = await this.tokenService.verifyToken(token) as MyUserProfile;
       console.log("🚀 ~ file: JWT.strategy.ts ~ line 28 ~ JWTStrategy ~ authenticate ~ user", user)
@@ -67,6 +68,7 @@ export class CustomStrategy implements AuthenticationStrategy{
   ) {}
   async authenticate(request: Request): Promise<any> {
     const token: string = this.extractCredentials(request);
+    console.log("🚀 ~ file: JWT.strategy.ts ~ line 71 ~ CustomStrategy ~ authenticate ~ token", token)
     try{
       const user: MyUserProfile = await this.tokenService.verifyToken(token) as unknown as MyUserProfile;
       console.log("🚀 ~ file: JWT.strategy.ts ~ line 28 ~ JWTStrategy ~ authenticate ~ user", user)

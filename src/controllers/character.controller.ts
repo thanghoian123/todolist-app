@@ -63,6 +63,7 @@ export class CharacterController {
       PermissionKey.CreateUser,
       PermissionKey.UpdateOwnUser,
       PermissionKey.DeleteOwnUser,
+      PermissionKey.BASE_USER
     ];
     if (await this.characterRepository.exists(character.email)) {
       throw new HttpErrors.BadRequest(`This email already exists`);

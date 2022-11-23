@@ -18,6 +18,12 @@ import {
   CustomStrategy, JWTService,
   JWTStrategy, MyAuthBindings, UserPermissionsProvider
 } from "./authorization";
+import {
+  JWTAuthenticationComponent,
+  SECURITY_SCHEME_SPEC,
+  UserServiceBindings,
+} from '@loopback/authentication-jwt';
+import { MysqlDataSource } from "./datasources";
 
 export class FirstgameApplication extends BootMixin(
   ServiceMixin(RepositoryMixin(RestApplication))
@@ -28,6 +34,10 @@ export class FirstgameApplication extends BootMixin(
     //add
     // Bind authentication component related elements
     this.component(AuthenticationComponent);
+     // Mount jwt component
+    this.component(JWTAuthenticationComponent);
+     // Bind datasource
+    this.dataSource(MysqlDataSource, UserServiceBindings.DATASOURCE_NAME);
     // Bind JWT & permission authentication strategy related elements
     registerAuthenticationStrategy(this, JWTStrategy as any);
     registerAuthenticationStrategy(this, CustomStrategy as any);

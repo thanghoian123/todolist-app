@@ -6,7 +6,7 @@ export class Task extends Entity {
   @property({
     type: 'string',
     id: true,
-    default: ()=>uuid()
+    default: () => uuid()
   })
   id?: string;
   @property({
@@ -15,6 +15,10 @@ export class Task extends Entity {
   })
   name: string;
 
+  @property({
+    type: 'string',
+  })
+  projectId?: string;
 
   constructor(data?: Partial<Task>) {
     super(data);

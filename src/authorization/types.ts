@@ -69,6 +69,32 @@ export const ProjectAddUserRequestBody = {
   },
 };
 
+export const ProjectTaskAddSchema = {
+  type: 'object',
+  required: ['id', 'userId'],
+  properties: {
+    projectId: {
+      type: 'string',
+    },
+    name: {
+      type: 'string',
+    },
+  },
+};
+
+export const ProjectAddTaskRequestBody = {
+  description: 'The input of add task into project function',
+  required: true,
+  content: {
+    'application/json': {schema: ProjectTaskAddSchema},
+  },
+};
+
+export  interface IProjectTaskAdd{
+  projectId: string;
+  name: string
+}
+
 export interface Credential {
   email: string;
   password: string;

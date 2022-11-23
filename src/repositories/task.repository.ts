@@ -1,6 +1,6 @@
 import {inject} from '@loopback/core';
 import {DefaultCrudRepository} from '@loopback/repository';
-import {Error: bad inputDataSource} from '../datasources';
+import {MysqlDataSource} from '../datasources';
 import {Task, TaskRelations} from '../models';
 
 export class TaskRepository extends DefaultCrudRepository<
@@ -9,7 +9,7 @@ export class TaskRepository extends DefaultCrudRepository<
   TaskRelations
 > {
   constructor(
-    @inject('datasources.') dataSource: Error: bad inputDataSource,
+    @inject('datasources.postgresql') dataSource: MysqlDataSource,
   ) {
     super(Task, dataSource);
   }

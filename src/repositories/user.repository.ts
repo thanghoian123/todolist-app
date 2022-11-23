@@ -10,7 +10,7 @@ import {
     typeof User.prototype.id
   > {
     constructor(
-      @inject('datasources.mongo') dataSource: MysqlDataSource,
+      @inject('datasources.postgresql') dataSource: MysqlDataSource,
     ) {
       super(User, dataSource);
     }
