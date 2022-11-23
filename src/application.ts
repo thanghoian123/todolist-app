@@ -1,27 +1,26 @@
-import {BootMixin} from '@loopback/boot';
-import {ApplicationConfig} from '@loopback/core';
+import { BootMixin } from "@loopback/boot";
+import { ApplicationConfig } from "@loopback/core";
+import { RepositoryMixin } from "@loopback/repository";
+import { RestApplication } from "@loopback/rest";
 import {
   RestExplorerBindings,
-  RestExplorerComponent,
-} from '@loopback/rest-explorer';
-import {RepositoryMixin} from '@loopback/repository';
-import {RestApplication} from '@loopback/rest';
-import {ServiceMixin} from '@loopback/service-proxy';
-import * as path from 'path';
-import {MySequence} from './sequence';
+  RestExplorerComponent
+} from "@loopback/rest-explorer";
+import { ServiceMixin } from "@loopback/service-proxy";
+import * as path from "path";
+import { MySequence } from "./sequence";
 //add
-import {MyAuthBindings,
-        JWTService,
-        JWTStrategy,
-        UserPermissionsProvider,
-        CustomStrategy,
-} from './authorization';
-import {AuthenticationComponent,
-       registerAuthenticationStrategy,
-} from '@loopback/authentication';
+import {
+  AuthenticationComponent,
+  registerAuthenticationStrategy
+} from "@loopback/authentication";
+import {
+  CustomStrategy, JWTService,
+  JWTStrategy, MyAuthBindings, UserPermissionsProvider
+} from "./authorization";
 
 export class FirstgameApplication extends BootMixin(
-  ServiceMixin(RepositoryMixin(RestApplication)),
+  ServiceMixin(RepositoryMixin(RestApplication))
 ) {
   constructor(options: ApplicationConfig = {}) {
     super(options);
@@ -30,19 +29,21 @@ export class FirstgameApplication extends BootMixin(
     // Bind authentication component related elements
     this.component(AuthenticationComponent);
     // Bind JWT & permission authentication strategy related elements
-    registerAuthenticationStrategy(this, JWTStrategy);
-    registerAuthenticationStrategy(this, CustomStrategy)
+    registerAuthenticationStrategy(this, JWTStrategy as any);
+    registerAuthenticationStrategy(this, CustomStrategy as any);
     this.bind(MyAuthBindings.TOKEN_SERVICE).toClass(JWTService);
-    this.bind(MyAuthBindings.USER_PERMISSIONS).toProvider(UserPermissionsProvider);
+    this.bind(MyAuthBindings.USER_PERMISSIONS).toProvider(
+      UserPermissionsProvider
+    );
     // Set up the custom sequence
     this.sequence(MySequence);
 
     // Set up default home page
-    this.static('/', path.join(__dirname, '../public'));
+    this.static("/", path.join(__dirname, "../public"));
 
     // Customize @loopback/rest-explorer configuration here
     this.bind(RestExplorerBindings.CONFIG).to({
-      path: '/explorer',
+      path: "/explorer",
     });
     this.component(RestExplorerComponent);
 
@@ -51,8 +52,8 @@ export class FirstgameApplication extends BootMixin(
     this.bootOptions = {
       controllers: {
         // Customize ControllerBooter Conventions here
-        dirs: ['controllers'],
-        extensions: ['.controller.js'],
+        dirs: ["controllers"],
+        extensions: [".controller.js"],
         nested: true,
       },
     };

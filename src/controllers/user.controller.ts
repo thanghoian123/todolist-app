@@ -1,37 +1,18 @@
 import {
-    Count,
-    CountSchema,
-    Filter,
-    repository,
-    Where,
-  } from '@loopback/repository';
-  import {
-    post,
-    param,
-    get,
-    getFilterSchemaFor,
-    getWhereSchemaFor,
-    patch,
-    put,
-    del,
-    requestBody,
-  } from '@loopback/rest';
-  import { User} from '../models';
-  import { UserRepository} from '../repositories';
+  repository
+} from '@loopback/repository';
+import {
+  get, post, requestBody
+} from '@loopback/rest';
+import { User } from '../models';
+import { UserRepository } from '../repositories';
   //add
-  import {inject, Getter} from '@loopback/core';
-  import {HttpErrors} from '@loopback/rest';
-  import {
-    MyUserProfile,
-    Credential,
-    MyAuthBindings,
-    PermissionKey,
-    CredentialsRequestBody,
-    UserRequestBody,
-    UserProfileSchema,
-    JWTService,
-  } from '../authorization';
-  import {authenticate, AuthenticationBindings} from '@loopback/authentication';
+  import { authenticate, AuthenticationBindings } from '@loopback/authentication';
+import { Getter, inject } from '@loopback/core';
+import { HttpErrors } from '@loopback/rest';
+import {
+  Credential, CredentialsRequestBody, JWTService, MyAuthBindings, MyUserProfile, PermissionKey, UserProfileSchema, UserRequestBody
+} from '../authorization';
   
   export class UserController {
     constructor(
@@ -56,7 +37,7 @@ import {
       },
     })
     async create(
-      @requestBody(UserRequestBody) user: User,
+      @requestBody(UserRequestBody as any) user: User,
     ): Promise<User> {
       user.permissions = [
         PermissionKey.BASE_USER,
@@ -85,7 +66,7 @@ import {
       },
     })
     async login(
-      @requestBody(CredentialsRequestBody) credential: Credential,
+      @requestBody(CredentialsRequestBody as any) credential: Credential,
     ): Promise<{token: string}> {
       const token = await this.jwtService.getToken(credential);
       return {token};
