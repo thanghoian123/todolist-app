@@ -1,5 +1,6 @@
 import {PermissionKey} from './permission-key';
 import {UserProfile} from "@loopback/security"
+import { ETaskStatusType } from '../types';
 export interface UserPermissionsFn {
   (
     userPermissions: PermissionKey[],
@@ -61,6 +62,23 @@ export const UserRequestBody = {
   },
 };
 
+export const ProjectTaskMoveSchema = {
+  type: 'object',
+  properties: {
+    status: {
+      type: 'string',
+    },
+  },
+};
+
+export const ProjectMoveTaskRequestBody = {
+  description: 'The input of add user into projectg function',
+  required: true,
+  content: {
+    'application/json': {schema:ProjectTaskMoveSchema },
+  },
+}
+
 export const ProjectAddUserRequestBody = {
   description: 'The input of add user into projectg function',
   required: true,
@@ -94,7 +112,9 @@ export  interface IProjectTaskAdd{
   projectId: string;
   name: string
 }
-
+export interface ITaskMoveParams{
+  status : ETaskStatusType
+}
 export interface Credential {
   email: string;
   password: string;

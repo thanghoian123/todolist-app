@@ -1,5 +1,6 @@
 import { authenticate, AuthenticationBindings } from '@loopback/authentication';
 import { Getter, inject } from '@loopback/context';
+import { service } from '@loopback/core';
 import {
   Count,
   CountSchema,
@@ -23,6 +24,7 @@ import {
 import { MyUserProfile, PermissionKey } from '../authorization';
 import {Task} from '../models';
 import {ProjectRepository, TaskRepository, TaskTaskRepository} from '../repositories';
+import { ProjectService } from '../services';
 
 export interface IGetTasksParams{
   projectId: string;
@@ -43,6 +45,8 @@ export class TaskController {
     public projectRepository : ProjectRepository,
     @repository(TaskTaskRepository)
     public taskTaskRepository : TaskTaskRepository,
+    @service(ProjectService)
+    public projectService: ProjectService, 
     @inject.getter(AuthenticationBindings.CURRENT_USER)
     public getCurrentUser: Getter<MyUserProfile>,
   ) {}
@@ -59,24 +63,11 @@ export class TaskController {
   async find(
     @requestBody() params: IGetTasksParams,
   ): Promise<any>{
-    const currentUser = await this.getCurrentUser()
-    // --------------- check user is exist on project
-      const projectData = await this.projectRepository.findOne({where: {id: params.projectId},include:['tasks', 'users']});
+    const checked = await this.projectService.checkProjectUser({projectId: params.projectId})
+    if(checked){
       const tasks = await this.taskRepository.find({where:{projectId: params.projectId}, include:["tasks"]} );
-      console.log("🚀 ~ file: task.controller.ts ~ line 66 ~ TaskController ~ tasks", tasks)
-      // const taskRelations = await this.taskTaskRepository.find({where: });
-
-      if(projectData){
-        const users = projectData?.users || []
-        const isExists = users.find(u=>u.id === currentUser.id)
-        if(!isExists){
-          throw new HttpErrors.Unauthorized("You not permit in this project");
-        }else{
-          return tasks || []
-        }
-      }else{
-        throw new HttpErrors.NotFound("Project not found");
-      }
+      return tasks
+    }
   }
 
 
@@ -92,27 +83,11 @@ export class TaskController {
   async linkTask(
     @requestBody() params: ILinkTaskParams,
   ): Promise<any>{
-    // const currentUser = await this.getCurrentUser()
-    // // --------------- check user is exist on project
-    //   const projectData = await this.projectRepository.findOne({where: {id: params.projectId},include:['tasks', 'users']});
-    //   if(projectData){
-    //     const users = projectData?.users || []
-    //     const isExists = users.find(u=>u.id === currentUser.id)
-    //     if(!isExists){
-    //       throw new HttpErrors.Unauthorized("You not permit in this project");
-    //     }else{
-    //       // link task here
-    //       const result = await this.taskTaskRepository.create({taskId: params.taskId, fk_taskId: params.taskIdLink})
-    //       return result
-    //     }
-
-        
-    //   }else{
-    //     throw new HttpErrors.NotFound("Project not found");
-    //   }
-
+    const checked = await this.projectService.checkProjectUser({projectId: params.projectId})
+    if(checked){
       const result = await this.taskTaskRepository.create({taskId: params.taskId, fk_taskId: params.taskIdLink})
-          return {message: "Success"}
+      return {message: result}
+    }
   }
 }
 

@@ -24,7 +24,18 @@ export class Task extends Entity {
     },
   })
   status: string
+  @property({
+    type: 'date',
+    default: () => new Date()
+  })
+  createdAt ?: string;
   
+  @property({
+    type: 'date',
+    default: () => new Date()
+  })
+  updatedAt?: string;
+
   @belongsTo(() => Project)
   projectId?: string;
 
@@ -41,6 +52,7 @@ export class Task extends Entity {
     super(data);
   }
 }
+
 
 export interface TaskRelations {
   project?: ProjectWithRelations;

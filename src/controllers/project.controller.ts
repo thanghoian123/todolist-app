@@ -17,14 +17,16 @@ import {
   requestBody,
   response,
 } from '@loopback/rest';
-import { EProjectUserAdd, IProjectTaskAdd, ProjectAddTaskRequestBody, ProjectAddUserRequestBody, ProjectUserAddSchema } from '../authorization';
-import {Project} from '../models';
-import {ProjectRepository, ProjectUserRepository} from '../repositories';
+import { EProjectUserAdd, IProjectTaskAdd, ITaskMoveParams, ProjectAddTaskRequestBody, ProjectAddUserRequestBody, ProjectMoveTaskRequestBody, ProjectUserAddSchema } from '../authorization';
+import {Project, Task} from '../models';
+import {ProjectRepository, ProjectUserRepository, TaskRepository} from '../repositories';
 
 export class ProjectController {
   constructor(
     @repository(ProjectRepository)
     public projectRepository : ProjectRepository,
+    @repository(TaskRepository)
+    public taskRepository : TaskRepository,
     @repository(ProjectUserRepository)
     public projectUserRepository : ProjectUserRepository,
   ) {}
@@ -88,11 +90,17 @@ export class ProjectController {
   
   async moveTask(
     @param.path.string('taskId') taskId: string,
-    @requestBody(ProjectAddTaskRequestBody as any)
-    params : IProjectTaskAdd,
+    @requestBody(ProjectMoveTaskRequestBody as any)
+    params : ITaskMoveParams,
   ): Promise<any> {
     console.log("🚀 ~ file: project.controller.ts ~ line 91 ~ ProjectController ~ taskId", taskId)
-    return this.projectRepository.tasks(params.projectId).create({name: params.name})
+    const findTask = await this.taskRepository.findById(taskId);
+    if(findTask){
+      findTask.status = params.status;
+      const result = this.taskRepository.updateById(taskId,{...findTask})
+      return result
+    } 
+    // return this.projectRepository.tasks(params.projectId).create({name: params.name})
   }
 
 
