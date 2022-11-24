@@ -1,3 +1,4 @@
+import { inject } from '@loopback/core';
 import {
   Count,
   CountSchema,
@@ -16,11 +17,14 @@ import {
   del,
   requestBody,
   response,
+  HttpErrors,
 } from '@loopback/rest';
 import { EProjectUserAdd, IProjectTaskAdd, ITaskMoveParams, ProjectAddTaskRequestBody, ProjectAddUserRequestBody, ProjectMoveTaskRequestBody, ProjectUserAddSchema } from '../authorization';
+import { MyCronJob } from '../cron/MyCronJob';
 import {Project, Task} from '../models';
 import {ProjectRepository, ProjectUserRepository, TaskRepository} from '../repositories';
-
+import {CronBindings} from '@loopback/cron';
+import { ETaskStatusType } from '../types';
 export class ProjectController {
   constructor(
     @repository(ProjectRepository)
@@ -29,6 +33,8 @@ export class ProjectController {
     public taskRepository : TaskRepository,
     @repository(ProjectUserRepository)
     public projectUserRepository : ProjectUserRepository,
+
+    @inject(CronBindings.COMPONENT)  public myCronJob: MyCronJob,
   ) {}
 
   @post('/projects',{
@@ -93,13 +99,21 @@ export class ProjectController {
     @requestBody(ProjectMoveTaskRequestBody as any)
     params : ITaskMoveParams,
   ): Promise<any> {
-    console.log("🚀 ~ file: project.controller.ts ~ line 91 ~ ProjectController ~ taskId", taskId)
     const findTask = await this.taskRepository.findById(taskId);
+    let result;
     if(findTask){
       findTask.status = params.status;
-      const result = this.taskRepository.updateById(taskId,{...findTask})
-      return result
+      result = this.taskRepository.updateById(taskId,{...findTask})
+    }else{
+      throw new HttpErrors.NotFound("Task not found")
     } 
+
+    if(params.status === ETaskStatusType.DONE){
+      console.log("🚀 ~ file: project.controller.ts ~ line 91 ~ ProjectController ~ taskId", taskId)
+      this.myCronJob.nextDates()
+    }
+    return result
+
     // return this.projectRepository.tasks(params.projectId).create({name: params.name})
   }
 

@@ -1,5 +1,5 @@
 import { BootMixin } from "@loopback/boot";
-import { ApplicationConfig } from "@loopback/core";
+import { ApplicationConfig, BindingKey, createBindingFromClass } from "@loopback/core";
 import { RepositoryMixin } from "@loopback/repository";
 import { RestApplication } from "@loopback/rest";
 import {
@@ -24,14 +24,18 @@ import {
   UserServiceBindings,
 } from '@loopback/authentication-jwt';
 import { MysqlDataSource } from "./datasources";
-
+import {CronComponent} from '@loopback/cron';
+import { jobBinding, MyCronJob } from "./cron/MyCronJob";
 export class FirstgameApplication extends BootMixin(
   ServiceMixin(RepositoryMixin(RestApplication))
 ) {
   constructor(options: ApplicationConfig = {}) {
     super(options);
 
-    //add
+    // Binding Cron components for cron jobs inside the constructor of Application class
+    this.component(CronComponent);
+    this.add(jobBinding);
+    // this.add(createBindingFromClass(MyCronJob));
     // Bind authentication component related elements
     this.component(AuthenticationComponent);
      // Mount jwt component
