@@ -16,7 +16,15 @@ export class Task extends Entity {
     required: true,
   })
   name: string;
-
+  @property({
+    type: 'string',
+    default:'todo',
+    jsonSchema: {
+      enum: ['todo', 'inprogress','review','done'],
+    },
+  })
+  status: string
+  
   @belongsTo(() => Project)
   projectId?: string;
 

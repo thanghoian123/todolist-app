@@ -79,6 +79,23 @@ export class ProjectController {
     
   }
 
+
+  @post('/projects/moveTask/{taskId}',{
+    responses: {
+      '200': ProjectAddUserRequestBody
+    },
+  })
+  
+  async moveTask(
+    @param.path.string('taskId') taskId: string,
+    @requestBody(ProjectAddTaskRequestBody as any)
+    params : IProjectTaskAdd,
+  ): Promise<any> {
+    console.log("🚀 ~ file: project.controller.ts ~ line 91 ~ ProjectController ~ taskId", taskId)
+    return this.projectRepository.tasks(params.projectId).create({name: params.name})
+  }
+
+
   @get('/projects/count')
   @response(200, {
     description: 'Project model count',
