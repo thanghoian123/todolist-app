@@ -1,5 +1,5 @@
 import { BootMixin } from "@loopback/boot";
-import { ApplicationConfig, BindingKey, createBindingFromClass } from "@loopback/core";
+import { ApplicationConfig, createBindingFromClass } from "@loopback/core";
 import { RepositoryMixin } from "@loopback/repository";
 import { RestApplication } from "@loopback/rest";
 import {
@@ -15,17 +15,19 @@ import {
   registerAuthenticationStrategy
 } from "@loopback/authentication";
 import {
-  CustomStrategy, JWTService,
-  JWTStrategy, MyAuthBindings, UserPermissionsProvider
-} from "./authorization";
-import {
   JWTAuthenticationComponent,
-  SECURITY_SCHEME_SPEC,
-  UserServiceBindings,
-} from '@loopback/authentication-jwt';
+  UserServiceBindings
+} from "@loopback/authentication-jwt";
+import { CronComponent } from "@loopback/cron";
+import {
+  CustomStrategy,
+  JWTService,
+  JWTStrategy,
+  MyAuthBindings,
+  UserPermissionsProvider
+} from "./authorization";
+import { MyCronJob } from "./cron/MyCronJob";
 import { MysqlDataSource } from "./datasources";
-import {CronComponent} from '@loopback/cron';
-import { jobBinding, MyCronJob } from "./cron/MyCronJob";
 export class FirstgameApplication extends BootMixin(
   ServiceMixin(RepositoryMixin(RestApplication))
 ) {
@@ -34,13 +36,15 @@ export class FirstgameApplication extends BootMixin(
 
     // Binding Cron components for cron jobs inside the constructor of Application class
     this.component(CronComponent);
-    this.add(jobBinding);
-    // this.add(createBindingFromClass(MyCronJob));
+    // this.bind("cron.job")
+    //   .to(job)
+    //   .apply(asCronJob);
+    this.add(createBindingFromClass(MyCronJob));
     // Bind authentication component related elements
     this.component(AuthenticationComponent);
-     // Mount jwt component
+    // Mount jwt component
     this.component(JWTAuthenticationComponent);
-     // Bind datasource
+    // Bind datasource
     this.dataSource(MysqlDataSource, UserServiceBindings.DATASOURCE_NAME);
     // Bind JWT & permission authentication strategy related elements
     registerAuthenticationStrategy(this as any, JWTStrategy as any);

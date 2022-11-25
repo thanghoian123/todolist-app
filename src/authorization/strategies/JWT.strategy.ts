@@ -1,14 +1,13 @@
-import {Request, HttpErrors} from '@loopback/rest';
-import {inject} from '@loopback/core';
-import {AuthenticationStrategy,
-        AuthenticationMetadata,
-        AuthenticationBindings,
-        TokenService,
+import {
+  AuthenticationBindings, AuthenticationMetadata, AuthenticationStrategy, TokenService
 } from '@loopback/authentication';
-import {MyUserProfile,
-        UserPermissionsFn,
-        RequiredPermissions,} from '../types';
-import {MyAuthBindings,} from '../keys';
+import { inject } from '@loopback/core';
+import { HttpErrors, Request } from '@loopback/rest';
+import { MyAuthBindings } from '../keys';
+import {
+  MyUserProfile,
+  UserPermissionsFn
+} from '../types';
 
 export class JWTStrategy implements AuthenticationStrategy{
   name: string = 'jwt';
@@ -25,7 +24,7 @@ export class JWTStrategy implements AuthenticationStrategy{
     const token: string = this.extractCredentials(request);
     console.log("🚀 ~ file: JWT.strategy.ts ~ line 26 ~ JWTStrategy ~ authenticate ~ token", token)
     try{
-      const user: MyUserProfile = await this.tokenService.verifyToken(token) as MyUserProfile;
+      const user: Partial<MyUserProfile> = await this.tokenService.verifyToken(token);
       console.log("🚀 ~ file: JWT.strategy.ts ~ line 28 ~ JWTStrategy ~ authenticate ~ user", user)
       return user;
     } catch (err: any) {
