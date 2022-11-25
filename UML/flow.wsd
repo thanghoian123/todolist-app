@@ -1,0 +1,58 @@
+@startuml
+' hide the spot
+hide circle
+
+' avoid problems with angled crows feet
+skinparam linetype ortho
+
+entity "user" as us {
+  *id : number <<generated>>
+  --
+  *name : text
+  *email : text
+  *password : text
+  permissions : arrayß
+}
+
+entity "project_user" as pu {
+  *pu_id : number <<generated>>
+  --
+ *fk_user: number <<FK>>
+*fk_project : number <<FK>>
+}
+
+entity "project" as pr {
+  *id : number <<generated>>
+  --
+
+  name : text
+}
+
+entity "task" as t {
+  *id : number <<generated>>
+  --
+  status : text
+  name : text
+}
+
+entity "task_task" as tt {
+  *tt_id : number <<generated>>
+  --
+ *fk_task: number <<FK>>
+}
+
+entity "project_task" as pt {
+  *pt_id : number <<generated>>
+  --
+ *fk_task: number <<FK>>
+ *fk_project : number <<FK>>
+}
+
+
+pr ||..|{ pu
+us ||..|{ pu
+t ||..|{ pt
+pr ||..|{ pt
+t ||..|{ tt
+
+@enduml
